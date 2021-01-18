@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>$Title$</title>
+  </head>
+  <body>
+  <script>
+    const webSocket = new WebSocket("ws://localhost:8080/LearningWebSocket_war_exploded/hello");
+    const msg = {
+      type: "message",
+      text: "Hello",
+      date: new Date()
+    };
+    webSocket.onmessage = function (evt) {
+      alert(evt.data);
+    };
+    webSocket.send(JSON.stringify(msg));
+  </script>
+  </body>
+</html>

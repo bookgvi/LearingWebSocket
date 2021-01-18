@@ -1,15 +1,26 @@
 package HelloWorld;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.enterprise.context.ApplicationScoped;
+import javax.websocket.Endpoint;
+import javax.websocket.server.ServerApplicationConfig;
 import javax.websocket.server.ServerEndpointConfig;
+import java.util.HashSet;
+import java.util.Set;
 
-@Singleton
-public class MainApp {
-  @PostConstruct
-  public static void init(String[] args) {
-    ServerEndpointConfig.Builder.create(HelloWithoutAnnotations.class, "/hello").build();
+public class MainApp implements ServerApplicationConfig {
+
+  public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
+    Set<ServerEndpointConfig> result = new HashSet<ServerEndpointConfig>();
+    for (Class epClass : set) {
+//need to ignore Client endpoint class
+      if (epClass.equals(HelloWithoutAnnotations.class)) {
+        ServerEndpointConfig sec = ServerEndpointConfig.Builder.create(epClass, "/hello").build();
+        result.add(sec);
+      }
+    }
+    return result;
+  }
+
+  public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> set) {
+    return null;
   }
 }
