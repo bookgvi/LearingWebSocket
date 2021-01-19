@@ -1,17 +1,41 @@
 package HelloWorld;
 
-import javax.websocket.OnMessage;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 @ServerEndpoint("/hey")
 public class HelloWithAnnotations {
-  @OnMessage
-  public void sendMessage(Session session) {
+  private static Queue<Session> sessionsQueue = new ConcurrentLinkedQueue<Session>();
+
+  @OnOpen
+  public void openConnection(Session session, EndpointConfig endpointConfig) {
+    Logger.getLogger("WEBSocket").info("Open");
+    HelloWithAnnotations.sessionsQueue.add(session);
+  }
+
+  @OnClose
+  public void closeConnection(Session session) {
+    HelloWithAnnotations.sessionsQueue.remove(session);
+    Logger.getLogger("WEBSocket").info("Close");
+  }
+
+  @OnError
+  public void errorConnection(Session session, Throwable throwable) {
+    HelloWithAnnotations.sessionsQueue.remove(session);
+    Logger.getLogger("WEBSocket").warning("ERROR " + throwable.getMessage());
+  }
+
+  static void sendMessage(String s) {
     try {
-      session.getBasicRemote().sendText("QQQ");
-    } catch (IOException ignored) {
+      for (Session session : sessionsQueue) {
+        session.getBasicRemote().sendText(s);
+      }
+    } catch (IOException ioEx) {
+      Logger.getLogger("WEBSocket").warning("ERROR while sending msg " + ioEx.getMessage());
     }
   }
 }

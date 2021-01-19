@@ -22,4 +22,9 @@ public class HelloWithoutAnnotations extends Endpoint {
       }
     });
   }
+
+  @Override
+  public void onError(Session session, Throwable thr) {
+    Logger.getLogger("Socket error").warning(thr.getMessage());
+  }
 }
