@@ -29,6 +29,11 @@ public class HelloWithAnnotations {
     Logger.getLogger("WEBSocket").warning("ERROR " + throwable.getMessage());
   }
 
+  @OnMessage
+  public void getMessage(Session session, String msg) {
+    Logger.getLogger("WEBSocket").info("Message " + msg);
+  }
+
   static void sendMessage(String s) {
     try {
       for (Session session : sessionsQueue) {

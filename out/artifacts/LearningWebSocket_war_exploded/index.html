@@ -3,20 +3,20 @@
     <title>$Title$</title>
   </head>
   <body>
-  <div class="answerFromSocket"></div>
+  <div id="answerFromSocket">QQQ</div>
   <script>
-    let div = document.getElementsByClassName("answerFromSocket");
+    var div = document.getElementById("answerFromSocket");
     const webSocket1 = new WebSocket("ws://localhost:8080/LearningWebSocket_war_exploded/hey");
     const msg = {
       type: "message",
       text: "Hello",
       date: new Date()
     };
-    webSocket1.onMessage = function (evt) {
-      div.innerHTML(evt.data);
+    webSocket1.onmessage = function (evt) {
+      div.textContent = evt.data;
       console.log(evt);
     };
-    // webSocket1.send("JSON.stringify(msg)");
+    webSocket1.send("JSON.stringify(msg)");
   </script>
   </body>
 </html>

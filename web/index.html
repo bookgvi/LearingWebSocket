@@ -4,19 +4,28 @@
   </head>
   <body>
   <div id="answerFromSocket">QQQ</div>
+  <br/>
+  <div>
+    <input type="button" id="sendMessage" value="Send message" />
+  </div>
   <script>
     var div = document.getElementById("answerFromSocket");
+    var sendButton = document.getElementById("sendMessage");
     const webSocket1 = new WebSocket("ws://localhost:8080/LearningWebSocket_war_exploded/hey");
     const msg = {
       type: "message",
       text: "Hello",
-      date: new Date()
+      date: null
     };
     webSocket1.onmessage = function (evt) {
       div.textContent = evt.data;
-      console.log(evt);
     };
-    webSocket1.send("JSON.stringify(msg)");
+
+    sendButton.addEventListener("click", click);
+    function click() {
+      msg.date = new Date();
+      webSocket1.send(JSON.stringify(msg));
+    }
   </script>
   </body>
 </html>
